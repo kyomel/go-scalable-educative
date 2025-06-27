@@ -1,0 +1,135 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+vendor/
+
+# Go workspace file
+go.work
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+bin/
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Local development configuration
+config/local.*
+
+# Temporary files
+tmp/
+
+# Test coverage directory
+coverage/
+
+# Debug files
+debug/
+
+# Build output directory
+build/
+
+# Local development certificates
+*.pem
+*.key
+*.crt
+
+# IDE specific
+.idea/
+*.iml
+.idea_modules/
+
+# Go specific
+/vendor/
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Local development files
+*.local
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# Environment files (loaded from environment variables or .env files)
+.env
+.env.local
+.env.*.local
+
+# Build and release directories
+/dist/
+/build/
+/release/
+
+# Dependency directories
+/vendor/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Local development configuration
+config/local.*
+
+# Test coverage directory
+coverage/
+
+# Debug files
+debug/
+
+# Local development certificates
+*.pem
+*.key
+*.crt
