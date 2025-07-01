@@ -9,9 +9,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"github.com/kyomel/go-scalable-educative/logger"
+	"github.com/kyomel/go-scalable-educative/server/api"
 	"go.uber.org/zap"
 )
 
@@ -21,21 +20,8 @@ type GracefulServer struct {
 }
 
 func NewServer(port string) *GracefulServer {
-	router := chi.NewRouter()
-	router.Use(middleware.Logger)
-	router.Get("/", baseHandler)
-	router.Get("/greeting", greetingHandler)
-	router.Get("/greeting/{name}", greetingHandler)
-	router.Get("/users", findUser)
-
-	httpServer := &http.Server{
-		Addr:    ":" + port,
-		Handler: router,
-	}
-
-	return &GracefulServer{
-		httpServer: httpServer,
-	}
+	httpServer := &http.Server{Addr: ":" + port, Handler: api.GetRouter()}
+	return &GracefulServer{httpServer: httpServer}
 }
 
 func (server *GracefulServer) PreStart() error {
@@ -45,12 +31,14 @@ func (server *GracefulServer) PreStart() error {
 		log.Println(errMsg)
 		return errors.New(errMsg)
 	}
-
 	return nil
 }
 
 func (server *GracefulServer) Start() (chan bool, error) {
-	listener, err := net.Listen("tcp", server.httpServer.Addr)
+	listener, err := net.Listen(
+		"tcp",
+		server.httpServer.Addr,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -71,15 +59,14 @@ func (server *GracefulServer) Start() (chan bool, error) {
 		server.Shutdown()
 		done <- true
 	}()
-
 	return done, nil
 }
 
-func (server *GracefulServer) Shutdown() error {
+func (s *GracefulServer) Shutdown() error {
 	logger.Close()
-	if server.listener != nil {
-		err := server.listener.Close()
-		server.listener = nil
+	if s.listener != nil {
+		err := s.listener.Close()
+		s.listener = nil
 		if err != nil {
 			return err
 		}
