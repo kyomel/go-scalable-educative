@@ -1,6 +1,7 @@
 package network
 
 import (
+	"context"
 	"errors"
 	"io"
 	"net/http"
@@ -14,6 +15,7 @@ type httpClient struct {
 	body    io.Reader
 	timeout int
 	name    string
+	ctx     *context.Context
 }
 
 func NewClient() *httpClient {
@@ -48,6 +50,11 @@ func (client *httpClient) Name(name string) *httpClient {
 	return client
 }
 
+func (client *httpClient) WithContext(ctx *context.Context) *httpClient {
+	client.ctx = ctx
+	return client
+}
+
 func (client *httpClient) Do(method, url string) (*http.Response, error) {
 	clientInstance := clientMap.getClient(client.name)
 	if clientInstance == nil {
@@ -57,6 +64,10 @@ func (client *httpClient) Do(method, url string) (*http.Response, error) {
 	req, requestInitError := http.NewRequest(method, url, client.body)
 	if requestInitError != nil {
 		return nil, requestInitError
+	}
+
+	if client.ctx != nil {
+		req = req.WithContext(*client.ctx)
 	}
 
 	for k, v := range client.headers {
