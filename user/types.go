@@ -12,9 +12,3 @@ type UserData struct {
 	users   []User
 	version int32
 }
-
-type FakeUser struct {
-	FirstName string `json:"firstname"`
-	LastName  string `json:"lastname"`
-	Gender    string `json:"gender"`
-}

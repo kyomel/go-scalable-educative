@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/kyomel/go-scalable-educative/logger"
 	"github.com/kyomel/go-scalable-educative/server/api"
@@ -21,12 +20,7 @@ type GracefulServer struct {
 }
 
 func NewServer(port string) *GracefulServer {
-	httpServer := &http.Server{
-		Addr:         ":" + port,
-		Handler:      api.GetRouter(),
-		WriteTimeout: 1 * time.Second,
-		ReadTimeout:  5 * time.Second,
-	}
+	httpServer := &http.Server{Addr: ":" + port, Handler: api.GetRouter()}
 	return &GracefulServer{httpServer: httpServer}
 }
 
