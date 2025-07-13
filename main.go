@@ -13,7 +13,7 @@ func main() {
 	server := server.NewServer(port)
 	err := server.PreStart()
 	if err != nil {
-		log.Fatalf("Error in pre-start - %v\n", err)
+		log.Fatalf("Error in prestart - %v\n", err)
 	}
 
 	done, err := server.Start()

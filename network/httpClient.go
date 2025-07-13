@@ -2,13 +2,17 @@ package network
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/afex/hystrix-go/hystrix"
+	"github.com/kyomel/go-scalable-educative/logger"
+	"go.uber.org/zap"
 )
 
-var DefaultTimeout = 5
+var DefaultTimeout = 1
 
 type httpClient struct {
 	headers http.Header
@@ -76,12 +80,24 @@ func (client *httpClient) Do(method, url string) (*http.Response, error) {
 		}
 	}
 
-	res, err := clientInstance.Do(req)
-	if err != nil || (res != nil && (res.StatusCode < 200 || res.StatusCode > 299)) {
-		return res, errors.New("something went wrong")
-	}
+	var res *http.Response
+	var apiErr error
 
-	return res, nil
+	err := hystrix.Do(client.name, func() error {
+		res, apiErr = clientInstance.Do(req)
+		if apiErr != nil {
+			return apiErr
+		}
+		if res != nil && (res.StatusCode < 200 || res.StatusCode > 299) {
+			return fmt.Errorf("non success status code found - %d", res.StatusCode)
+		}
+		return nil
+	}, func(err error) error {
+		logger.GetLoggerInstance().Error("API error", zap.Error(err))
+		return fmt.Errorf("something went wrong")
+	})
+
+	return res, err
 }
 
 func (client *httpClient) Get(url string) (*http.Response, error) {
